@@ -18,7 +18,7 @@ class ToThirdPerson(sublime_plugin.TextCommand):
         """ Launch method for ToThirdPerson plugin"""
         for region in self.view.sel():
             if region.empty and settings.get(
-            "use_entire_file_if_no_selection", True):
+                    "use_entire_file_if_no_selection", True):
                 selection = sublime.Region(0, self.view.size())
             else:
                 selection = region
