@@ -3,9 +3,8 @@ import sublime_plugin
 import json
 import re
 
-# settings = sublime.load_settings("ToThird.sublime-settings")
+settings = sublime.load_settings("ToThird.sublime-settings")
 package_path = sublime.packages_path()
-sublime.status_message(package_path)
 wordmap_location = "{}/ToThird/ToThird-wordmap.json".format(
     package_path)
 with open(wordmap_location, "r") as mapfile:
@@ -18,7 +17,8 @@ class ToThirdPerson(sublime_plugin.TextCommand):
     def run(self, edit):
         """ Launch method for ToThirdPerson plugin"""
         for region in self.view.sel():
-            if region.empty:
+            if region.empty and settings.get(
+            "use_entire_file_if_no_selection", True):
                 selection = sublime.Region(0, self.view.size())
             else:
                 selection = region
