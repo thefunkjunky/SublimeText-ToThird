@@ -1,20 +1,20 @@
 {
     "single-word": {
-        "I": "they",
-        "me": "them",
-        "my": "their",
-        "mine": "theirs",
-        "we": "they",
-        "us": "them",
-        "our": "their",
-        "ours": "theirs"
+        "\\bI\\b": "they",
+        "\\bme\\b": "them",
+        "\\bmy\\b": "their",
+        "\\bmine\\b": "theirs",
+        "\\bwe\\b": "they",
+        "\\bus\\b": "them",
+        "\\bour\\b": "their",
+        "\\bours\\b": "theirs"
     },
     "multi-word": {
-        "I am": "They are"
+        "\\bI am\\b": "they are"
     },
     "conjunctions": {
-        "I'm": "they are",
-        "we're": "we are"
+        "\\bI'm\\b": "they are",
+        "\\bwe're\\b": "we are"
     }
     
 }

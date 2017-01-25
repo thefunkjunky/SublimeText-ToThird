@@ -1,6 +1,7 @@
 import sublime
 import sublime_plugin
 import json
+import re
 
 # settings = sublime.load_settings("ToThird.sublime-settings")
 package_path = sublime.packages_path()
@@ -15,18 +16,30 @@ with open(wordmap_location, "r") as mapfile:
 class ToThirdPerson(sublime_plugin.TextCommand):
     """ Main class for To Third (person) sublime text 3 package """
     def run(self, edit):
-        allcontent = sublime.Region(0, self.view.size())
-        selects = self.view.sel()
-        # Check for selections and run to_third() on them, otherwise run it on
-        # whole document
-        if selects:
-            for select in selects:
-                self.view.replace(edit, select, self.to_third(select))
-        else:
-            self.view.replace(edit, allcontent, self.to_third(select))
+        """ Launch method for ToThirdPerson plugin"""
+        for region in self.view.sel():
+            if region.empty:
+                selection = sublime.Region(0, self.view.size())
+            else:
+                selection = region
+
+            try:
+                selection_text = self.view.substr(selection)
+                converted_text = self.to_third(selection_text)
+                self.view.replace(edit, selection, converted_text)
+            except Exception as e:
+                print("Failed with exception {}".format(e))
 
     def to_third(self, text):
         """  Inputs text, search and replace for pattern matches,
         and returns modified text."""
+        operations_ordered = ['conjunctions', 'multi-word', 'single-word']
+        for op in operations_ordered:
+            for key, value in WORDMAP[op].items():
+                # print("key {} value {}".format(key, value))
+                # print("\nText: {}".format(str(text)))
+                reobject = re.compile(key, re.I | re.M)
+                text = reobject.sub(value, str(text))
 
-        pass
+        return text
+
