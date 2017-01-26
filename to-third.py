@@ -1,7 +1,8 @@
 import sys
+import os
+
 import json
 import re
-import imp
 
 import sublime
 import sublime_plugin
@@ -11,12 +12,14 @@ settings = sublime.load_settings("ToThird.sublime-settings")
 package_path = sublime.packages_path()
 sys.path.insert(0, "{}/ToThird/lib".format(
     package_path))
+NLTK_DATA_DIR = "{}/ToThird/lib/nltk-data".format(
+    package_path)
 
 # Must use <= v3.2 of nltk, as sublime text uses old python 3.3
 from nltk import download as nltk_download
-# TODO: Test if nltk data exists, if not, find way to automate nltk_download()
+# TODO: Test if nltk data exists, if not, automate nltk_download('punkt')
 # TODO: Dont forget to set 'NLTK_DATA' env variable to data location
-# nltk_download()
+nltk_download("punkt")
 from nltk.tokenize import sent_tokenize
 
 wordmap_location = "{}/ToThird/ToThird-wordmap.json".format(
@@ -71,7 +74,7 @@ class ToThirdPerson(sublime_plugin.TextCommand):
         # split_text = re.split(delimiters_re, text, re.M)
         sentences = sent_tokenize(text)
         print(sentences)
-        fixed_text = ". ".join(sentence.capitalize()
+        fixed_text = "".join(sentence.capitalize()
                                 for sentence in sentences)
 
         return fixed_text
