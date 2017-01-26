@@ -12,6 +12,7 @@ package_path = sublime.packages_path()
 sys.path.insert(0, "{}/ToThird/lib".format(
     package_path))
 
+# Must use <= v3.2 of nltk, as sublime text uses old python 3.3
 from nltk import download as nltk_download
 # TODO: Test if nltk data exists, if not, find way to automate nltk_download()
 # TODO: Dont forget to set 'NLTK_DATA' env variable to data location
