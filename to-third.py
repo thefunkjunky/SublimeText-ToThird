@@ -3,6 +3,7 @@ import os
 
 import json
 import re
+from itertools import chain
 
 import sublime
 import sublime_plugin
@@ -37,6 +38,7 @@ class ToThirdPerson(sublime_plugin.TextCommand):
                     "use_entire_file_if_no_selection", True):
                 selection = sublime.Region(0, self.view.size())
             else:
+                # This does not appear to work
                 selection = region
 
             try:
@@ -61,21 +63,28 @@ class ToThirdPerson(sublime_plugin.TextCommand):
     def fix_case(self, text):
         """  Parses sentences and fixes case with str.capitalize() """
 
-        # What I got so far for the delimiter_re:
-        # r"(?! )([a-z|A-Z|, |'|"]*)(?=[.|?|!|\n][ |\n]*)"
-
-        # Even better, find a way to steal
-        # http://www.nltk.org/_modules/nltk/tokenize/punkt.html
-
-        # example of a st3 plugin installing a 3rd party library:
-        # https://github.com/sergeche/emmet-sublime/blob/master/emmet/pyv8loader.py
-
-        # delimiters_re = r"(.+\w+)(?=\.)"
-        # split_text = re.split(delimiters_re, text, re.M)
+        alphanum_list_re = r'(?<!\w)(.{1}\.)'
+        teststring = "1. they are testing a numbered line."
+        print("teststring: {}".format(re.split(alphanum_list_re, teststring, 1)))
         sentences = sent_tokenize(text)
-        print(sentences)
-        fixed_text = "".join(sentence.capitalize()
-                                for sentence in sentences)
+        sen_split_alphanum_list = [re.split(alphanum_list_re, sentence)
+                                    for sentence in sentences]
+        # print("sen_split_alphanum_list: {}".format(sen_split_alphanum_list))
+        sen_cleaned = list(chain(*sen_split_alphanum_list))
+        print("sen_cleaned: {}".format(sen_cleaned))
+        # for sentence in sentences:
+        #     if sentence[-1] == "\n":
+        #         delimiter = "\n"
+        #     else:
+        #         delimiter = " "
+        fixed_text = "".join(sentence[re.search("\S", sentence).start():].capitalize()
+                                if re.search("\S", sentence)
+                                else sentence.capitalize()
+                                for sentence in sen_cleaned)
 
-        return fixed_text
+        print("fixed test: {}".format(fixed_text))
+
+        # fixed_text = text.capitalize()
+
+        # return fixed_text
 

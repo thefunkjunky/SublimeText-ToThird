@@ -14,7 +14,7 @@
     },
     "conjunctions": {
         "\\bI'm\\b": "they are",
-        "\\bwe're\\b": "we are"
+        "\\bwe're\\b": "they are"
     }
     
 }
