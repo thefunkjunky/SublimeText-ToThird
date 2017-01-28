@@ -63,8 +63,10 @@ def sentence_cleanup(sentences):
     # TODO: Note that this wouldn't be needed if alphanum_list_re worked better
     ellipses_re = r"(\.\.\.)"
     # TODO: This regex needs to be fixed.
-    # Catch alphanumeric lists (1. blah, A. Blah, 123. Blah)
-    alphanum_list_re = r"(?<!\w)([a-zA-Z0-9]+\.{1})(?!\.)"
+    # Catch alphanumeric lists (1. blah, a) Blah, 123. Blah)
+    alphanum_list_re = r"(?<!\w)(\A|\n)([a-zA-Z0-9]+[\.|\)]{1})(?!\.)"
+    # Final regex for finding first character to capitalize
+    char_to_capitalize_re = r"[a-zA-Z]"
 
     # teststring = "1. Mr. Jennings is testing a numbered line."
     # print("teststring: {}".format(re.split(alphanum_list_re, teststring)))
@@ -72,14 +74,14 @@ def sentence_cleanup(sentences):
                                 for sentence in sentences]
     # Flatten nested lists
     sen_split_ellipses = list(chain(*sen_split_ellipses))
-    print("sen_split_ellipses: {}".format(sen_split_ellipses))
+    # print("sen_split_ellipses: {}".format(sen_split_ellipses))
 
     for index, string in enumerate(sen_split_ellipses):
         if string == "...":
             pass
 
     sen_split_alphanum_list = [re.split(alphanum_list_re, sentence)
-                                for sentence in sen_split_ellipses]
+                                for sentence in sentences]
     # print("sen_split_alphanum_list: {}".format(sen_split_alphanum_list))
     sen_cleaned = list(chain(*sen_split_alphanum_list))
     print("sen_cleaned: {}".format(sen_cleaned))
@@ -88,10 +90,12 @@ def sentence_cleanup(sentences):
     #         delimiter = "\n"
     #     else:
     #         delimiter = " "
-    fixed_text = "".join(sentence[re.search("\S", sentence).start():].capitalize()
-                            if re.search("\S", sentence)
-                            else sentence.capitalize()
-                            for sentence in sen_cleaned)
+    fixed_text = "".join(sentence[
+                    re.search("[a-zA-Z]", sentence).start():]
+                    .capitalize()
+                    if re.search("[a-zA-Z]", sentence)
+                    else sentence.capitalize()
+                    for sentence in sen_cleaned)
     return fixed_text
 
 
